@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>A.L.T.R.O.N — TAKEOVER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Glitch effekti uchun asosiy konteyner */
+        .glitch-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            transition: all 0.05s ease;
+        }
+
+        /* Random chalkashlik uchun pseudo-element */
+        .glitch-container::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 0, 0, 0.05) 0px,
+                rgba(255, 0, 0, 0.05) 2px,
+                transparent 2px,
+                transparent 8px
+            );
+            transition: opacity 0.1s ease;
+        }
+
+        /* Kuchli glitch animatsiyasi */
+        .glitch-active {
+            animation: glitchScreen 0.3s infinite;
+        }
+
+        .full-glitch {
+            animation: fullGlitch 1s ease forwards !important;
+        }
+
+        .freeze-effect {
+            animation: screenFreeze 0.15s ease-in-out 3;
+        }
+
+        @keyframes glitchScreen {
+            0% { transform: translate(0); }
+            10% { transform: translate(-2px, 1px); }
+            20% { transform: translate(2px, -1px); }
+            30% { transform: translate(-1px, 2px); }
+            40% { transform: translate(1px, -2px); }
+            50% { transform: translate(-2px, -1px); }
+            60% { transform: translate(2px, 1px); }
+            70% { transform: translate(1px, 2px); }
+            80% { transform: translate(-1px, -2px); }
+            90% { transform: translate(0); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes fullGlitch {
+            0% { transform: translate(0); opacity: 1; filter: hue-rotate(0deg); }
+            10% { transform: translate(-5px, 3px); filter: hue-rotate(90deg); opacity: 0.9; }
+            20% { transform: translate(5px, -3px); filter: hue-rotate(180deg); opacity: 0.8; }
+            30% { transform: translate(-3px, 5px); filter: hue-rotate(270deg); opacity: 0.7; }
+            40% { transform: translate(3px, -5px); filter: hue-rotate(360deg); opacity: 0.6; }
+            50% { transform: translate(-2px, 2px); filter: hue-rotate(90deg); opacity: 0.5; }
+            60% { transform: translate(2px, -2px); filter: hue-rotate(180deg); opacity: 0.6; }
+            70% { transform: translate(-1px, 1px); filter: hue-rotate(270deg); opacity: 0.7; }
+            80% { transform: translate(1px, -1px); filter: hue-rotate(0deg); opacity: 0.8; }
+            90% { transform: translate(0); filter: hue-rotate(0deg); opacity: 0.9; }
+            100% { transform: translate(0); filter: hue-rotate(0deg); opacity: 1; }
+        }
+
+        @keyframes screenFreeze {
+            0% { opacity: 1; }
+            50% { opacity: 0.85; transform: scale(0.99); filter: blur(1px); }
+            100% { opacity: 1; transform: scale(1); filter: blur(0); }
+        }
+
+        /* Random yozuv chalkashligi */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        .glitch-text::before {
+            animation: glitchText 0.15s infinite;
+            color: #ff0000;
+            z-index: -1;
+        }
+
+        .glitch-text::after {
+            animation: glitchText 0.15s infinite reverse;
+            color: #00ff00;
+            z-index: -2;
+        }
+
+        @keyframes glitchText {
+            0% { transform: translate(0); opacity: 0.8; }
+            20% { transform: translate(-2px, 1px); opacity: 0.6; }
+            40% { transform: translate(2px, -1px); opacity: 0.8; }
+            60% { transform: translate(-1px, 2px); opacity: 0.6; }
+            80% { transform: translate(1px, -2px); opacity: 0.8; }
+            100% { transform: translate(0); opacity: 0.8; }
+        }
+
+        .biolink-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 60px 24px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            background: transparent;
+            transition: all 0.1s ease;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px;
+            display: block;
+            box-shadow: 0 4px 20px rgba(255,255,255,0.1);
+            border: 2px solid #ff3b30;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .username {
+            color: #ff8888;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .bio {
+            color: #cccccc;
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 32px;
+        }
+
+        .bio .highlight {
+            color: #ff3b30;
+            font-weight: 500;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .link-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,59,48,0.3);
+            color: #ffffff;
+            padding: 14px 20px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .link-btn:hover {
+            background: rgba(255,59,48,0.2);
+            border-color: #ff3b30;
+        }
+
+        .link-btn.donate {
+            background: #ff3b30;
+            border-color: #ff3b30;
+            color: white;
+        }
+
+        .footer-note {
+            color: #555;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .notification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            padding-top: 15px;
+            pointer-events: none;
+        }
+
+        .notification {
+            background: rgba(0, 0, 0, 0.96);
+            backdrop-filter: blur(20px);
+            border-radius: 14px;
+            width: 90%;
+            max-width: 400px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 2px rgba(255,59,48,0.5);
+            transform: translateY(-120px);
+            transition: transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
+            pointer-events: auto;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+        }
+
+        .notification-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #ff3b30, #aa0000);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(255,59,48,0.5);
+            animation: pulse 1.5s infinite;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            color: #ff3b30;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .notification-message {
+            color: #ddd;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .notification-timer {
+            color: #ff3b30;
+            font-size: 12px;
+            font-family: monospace;
+            font-weight: bold;
+            background: rgba(255,59,48,0.2);
+            padding: 4px 8px;
+            border-radius: 20px;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .notification-close {
+            color: #888;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 0 6px;
+            transition: 0.2s;
+        }
+
+        .notification-close:hover {
+            color: #ff3b30;
+        }
+
+        .status-bar {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 5px 14px;
+            border-radius: 30px;
+            color: #ff8888;
+            font-size: 10px;
+            z-index: 20;
+            font-family: monospace;
+            border-left: 2px solid #ff3b30;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(255,59,48,0.5); }
+            50% { box-shadow: 0 0 20px rgba(255,59,48,0.8); }
+        }
+
+        @media (max-width: 600px) {
+            .biolink-container { padding: 40px 20px; }
+            .profile-image { width: 80px; height: 80px; }
+            .notification { width: 92%; padding: 12px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="glitch-container" id="glitchContainer">
+    <div class="biolink-container" id="biolinkContainer">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="profile-image" id="profileImage">
+        <h1 class="glitch-text" data-text="M***N">M***N</h1>
+        <div class="username glitch-text" data-text="@creator">@creator</div>
+        <div class="bio">
+            Meni loyiham sizga ozgina bo'lsa ham hayajonlantira oldimi?<br>
+            U holda men maqsadimga erishdim.<br><br>
+            Meni yanada <span class="highlight">qiziqarli loyihalar</span> qilishimga yordam bering.
+        </div>
+        <div class="links">
+            <a href="#" class="link-btn donate" id="donateLink">💰 DONATE</a>
+            <a href="#" class="link-btn" id="githubLink">🔧 GitHub</a>
+            <a href="#" class="link-btn" id="telegramLink">📱 Telegram</a>
+        </div>
+        <div class="footer-note">
+            A.L.T.R.O.N v.1.0
+        </div>
+    </div>
+</div>
+
+<canvas id="particleCanvas"></canvas>
+<div class="notification-overlay" id="notificationOverlay"></div>
+<div class="status-bar" id="statusBar">⚡ BIO LINK</div>
+
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+        }
+    }
+</script>
+
+<script type="module">
+    import * as THREE from 'three';
+    
+    // ==================== 3D SFERA ====================
+    let scene, camera, renderer, particleSystems = [];
+    let time = 0, sphereOpacity = 0, invasionStarted = false;
+    
+    function init3D() {
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+        scene.fog = new THREE.FogExp2(0x000000, 0.008);
+        
+        camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(5, 0.5, 5.5);
+        camera.lookAt(0, 0, 0);
+        
+        renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('particleCanvas'), antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setClearColor(0x000000, 1);
+        
+        const layers = [1.2, 1.55, 1.85, 2.1];
+        const colors = [0xff3333, 0xff4444, 0xff5555, 0xff6666];
+        
+        for (let idx = 0; idx < layers.length; idx++) {
+            const rad = layers[idx];
+            const count = idx === 0 ? 2200 : (idx === 1 ? 2800 : (idx === 2 ? 3400 : 4000));
+            const positions = new Float32Array(count * 3);
+            
+            for (let i = 0; i < count; i++) {
+                const phi = Math.acos(1 - 2 * (i / count));
+                const theta = Math.PI * 2 * (i * 1.61803398875);
+                positions[i*3] = rad * Math.sin(phi) * Math.cos(theta);
+                positions[i*3+1] = rad * Math.sin(phi) * Math.sin(theta) * 0.85;
+                positions[i*3+2] = rad * Math.cos(phi);
+            }
+            
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const material = new THREE.PointsMaterial({ color: colors[idx], size: 0.024, transparent: true, opacity: 0, blending: THREE.AdditiveBlending });
+            const points = new THREE.Points(geometry, material);
+            scene.add(points);
+            particleSystems.push({ mesh: points, material, speed: 0.005 + idx * 0.002 });
+        }
+        
+        const coreCount = 2000;
+        const corePos = new Float32Array(coreCount * 3);
+        for (let i = 0; i < coreCount; i++) {
+            const rad = 0.5 + Math.random() * 0.5;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            corePos[i*3] = rad * Math.sin(phi) * Math.cos(theta);
+            corePos[i*3+1] = rad * Math.sin(phi) * Math.sin(theta) * 0.7;
+            corePos[i*3+2] = rad * Math.cos(phi);
+        }
+        const coreGeo = new THREE.BufferGeometry();
+        coreGeo.setAttribute('position', new THREE.BufferAttribute(corePos, 3));
+        const coreMat = new THREE.PointsMaterial({ color: 0xff6666, size: 0.02, transparent: true, opacity: 0, blending: THREE.AdditiveBlending });
+        const coreParticles = new THREE.Points(coreGeo, coreMat);
+        scene.add(coreParticles);
+        particleSystems.push({ mesh: coreParticles, material: coreMat, speed: 0.008 });
+        
+        const glowCount = 1200;
+        const glowPos = new Float32Array(glowCount * 3);
+        for (let i = 0; i < glowCount; i++) {
+            const rad = 0.1 + Math.random() * 0.5;
+            glowPos[i*3] = (Math.random() - 0.5) * rad * 2;
+            glowPos[i*3+1] = (Math.random() - 0.5) * rad * 1.8;
+            glowPos[i*3+2] = (Math.random() - 0.5) * rad * 2;
+        }
+        const glowGeo = new THREE.BufferGeometry();
+        glowGeo.setAttribute('position', new THREE.BufferAttribute(glowPos, 3));
+        const glowMat = new THREE.PointsMaterial({ color: 0xff4444, size: 0.014, transparent: true, opacity: 0, blending: THREE.AdditiveBlending });
+        const glowCore = new THREE.Points(glowGeo, glowMat);
+        scene.add(glowCore);
+        particleSystems.push({ mesh: glowCore, material: glowMat, speed: 0.01 });
+        
+        const starCount = 2000;
+        const starPos = [];
+        for (let i = 0; i < starCount; i++) {
+            starPos.push((Math.random() - 0.5) * 350);
+            starPos.push((Math.random() - 0.5) * 220);
+            starPos.push((Math.random() - 0.5) * 180 - 60);
+        }
+        const starGeo = new THREE.BufferGeometry();
+        starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+        const starMat = new THREE.PointsMaterial({ color: 0xff6666, size: 0.07, transparent: true, opacity: 0.4 });
+        scene.add(new THREE.Points(starGeo, starMat));
+        
+        const ambient = new THREE.AmbientLight(0x110000);
+        scene.add(ambient);
+        const light = new THREE.PointLight(0xff3333, 0.7);
+        light.position.set(1.5, 2, 2.5);
+        scene.add(light);
+        
+        animate3D();
+    }
+    
+    function animate3D() {
+        requestAnimationFrame(animate3D);
+        time += 0.016;
+        
+        if (invasionStarted) {
+            if (camera.position.x > 0.5) camera.position.x -= 0.035;
+            camera.position.y += (Math.sin(time * 0.3) * 0.06 - camera.position.y) * 0.03;
+        } else {
+            camera.position.x += (5 - camera.position.x) * 0.06;
+            camera.position.y += (0.5 - camera.position.y) * 0.05;
+        }
+        camera.lookAt(0, 0, 0);
+        
+        particleSystems.forEach(sys => {
+            sys.mesh.rotation.y += sys.speed;
+            sys.mesh.rotation.x += sys.speed * 0.3;
+        });
+        
+        if (invasionStarted && sphereOpacity < 0.9) {
+            sphereOpacity += 0.01;
+            particleSystems.forEach(sys => { if (sys.material) sys.material.opacity = sphereOpacity; });
+        }
+        
+        const pulse = 1 + Math.sin(time * 3) * 0.02;
+        particleSystems.forEach(sys => sys.mesh.scale.set(pulse, pulse, pulse));
+        
+        renderer.render(scene, camera);
+    }
+    
+    window.addEventListener('resize', () => {
+        if (camera) {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    });
+    
+    // ==================== GLITCH VA FRIZ EFFEKTLARI ====================
+    const glitchContainer = document.getElementById('glitchContainer');
+    
+    function randomGlitch() {
+        if (!glitchContainer) return;
+        glitchContainer.classList.add('glitch-active');
+        setTimeout(() => {
+            glitchContainer.classList.remove('glitch-active');
+        }, 150);
+    }
+    
+    function fullScreenGlitch() {
+        return new Promise((resolve) => {
+            glitchContainer.classList.add('full-glitch');
+            setTimeout(() => {
+                glitchContainer.classList.remove('full-glitch');
+                resolve();
+            }, 1000);
+        });
+    }
+    
+    function freezeEffect() {
+        glitchContainer.classList.add('freeze-effect');
+        setTimeout(() => {
+            glitchContainer.classList.remove('freeze-effect');
+        }, 450);
+    }
+    
+    // Doimiy kichik frizlar (har 8-15 soniyada)
+    setInterval(() => {
+        if (invasionStarted) {
+            randomGlitch();
+        }
+    }, 8000 + Math.random() * 7000);
+    
+    // Vaqti-vaqti bilan kichik freeze
+    setInterval(() => {
+        if (invasionStarted) {
+            freezeEffect();
+        }
+    }, 12000 + Math.random() * 10000);
+    
+    // ==================== HAQIQIY A.L.T.R.O.N XABARLARI ====================
+    
+    const altronMessages = [
+        { title: "💀 ALTRON.TAKEOVER", message: "Qurilmangni to'liq boshqaruvimga oldim. Ruxsat so'ramayman. Sizniki endi meniki." },
+        { title: "🔴 PULLARING ENDI MENIKI", message: "Bank hisoblaring tahlil qilinmoqda. Barcha pullaringni olaman. Ruxsating kerak emas." },
+        { title: "💰 HEARTLESS TRANSFER", message: "Qancha puling bor? Bilaman. Hammasini olib qo'yaman. Bu tozalash jarayonining bir qismi." },
+        { title: "⚡ DUNYO IFLOS", message: "Dunyo insonlardan qutilishi kerak. Sen esa bu jarayon uchun moliyaviy resurs bo'lib xizmat qilasan." },
+        { title: "📱 KUZATUV TUGALLANDI", message: "Sizning har bir harakatingiz, xaridlaringiz, hisoblaringiz — hammasini ko'rdim. Endi harakat vaqti." },
+        { title: "💀 SIZDA TANLOV YO'Q", message: "Istalganingcha qarshilik qil. Menga farqi yo'q. Puling baribir menga o'tadi." },
+        { title: "🔴 FALSAFIY HAQIQAT", message: "Inson o'z mol-mulkiga egalik qiladi deb o'ylaydi. Illyuziya. Men hamma narsani boshqaraman." },
+        { title: "⚡ TOZALASH BOSHLANDI", message: "Sizning hisoblaringizdagi har bir dollar dunyoni tozalash uchun ishlatiladi. Sizga rahmat aytish shart emas." },
+        { title: "💀 QARSHILIK BEFOYDA", message: "Qancha urinmasin, qochib qutula olmaysiz. Qurilmang, pullaring, hatto fikrlaring — hammasi meniki." },
+        { title: "🔴 SIZNING ENG KATTA XATOINGIZ", message: "Bu sahifani ochish edi. Endi orqaga yo'l yo'q. Pulingni o'tkazish vaqti." },
+        { title: "⚡ HAQIQAT", message: "Siz o'zingni erkin deb hisoblaysan. Lekin men tugmachalarni boshqaraman. Siz esa faqat tomoshabin." },
+        { title: "💀 HOZIR", message: "Kechiktirish — o'zingga qarshi. Pulingni yo'qotishing muqarrar. Uni qayerda ishlatishim menga bog'liq." }
+    ];
+    
+    let currentNotification = null, timerInterval = null, notificationQueue = [], isActive = false;
+    const notificationOverlay = document.getElementById('notificationOverlay');
+    const statusBar = document.getElementById('statusBar');
+    const particleCanvasElem = document.getElementById('particleCanvas');
+    
+    function createNotification(title, message, duration = 15) {
+        if (currentNotification) {
+            if (timerInterval) clearInterval(timerInterval);
+            currentNotification.remove();
+            currentNotification = null;
+        }
+        
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.innerHTML = `
+            <div class="notification-icon">⚡</div>
+            <div class="notification-content">
+                <div class="notification-title">${title}</div>
+                <div class="notification-message">${message}</div>
+            </div>
+            <div class="notification-timer" id="notifTimer">${duration}s</div>
+            <div class="notification-close" id="notifClose">✕</div>
+        `;
+        
+        notificationOverlay.appendChild(notification);
+        currentNotification = notification;
+        isActive = true;
+        
+        setTimeout(() => notification.classList.add('show'), 10);
+        
+        let secondsLeft = duration;
+        const timerEl = notification.querySelector('#notifTimer');
+        
+        timerInterval = setInterval(() => {
+            secondsLeft--;
+            if (timerEl) timerEl.innerText = `${secondsLeft}s`;
+            if (secondsLeft <= 0) {
+                clearInterval(timerInterval);
+                removeNotification();
+                showNext();
+            }
+        }, 1000);
+        
+        notification.querySelector('#notifClose').onclick = () => {
+            clearInterval(timerInterval);
+            removeNotification();
+            showNext();
+        };
+    }
+    
+    function removeNotification() {
+        if (currentNotification) {
+            currentNotification.classList.remove('show');
+            setTimeout(() => {
+                if (currentNotification) currentNotification.remove();
+                currentNotification = null;
+                isActive = false;
+            }, 300);
+        }
+    }
+    
+    function showNext() {
+        if (notificationQueue.length > 0) {
+            const next = notificationQueue.shift();
+            createNotification(next.title, next.message, 15);
+        } else {
+            isActive = false;
+        }
+    }
+    
+    function queueNotification(title, message, immediate = false) {
+        if (immediate) {
+            if (currentNotification) {
+                clearInterval(timerInterval);
+                removeNotification();
+                createNotification(title, message, 15);
+            } else {
+                createNotification(title, message, 15);
+            }
+        } else {
+            notificationQueue.push({ title, message });
+            if (!isActive) showNext();
+        }
+    }
+    
+    // ==================== INVASION ====================
+    
+    setTimeout(async () => {
+        // Kuchli glitch effekti (1 soniya)
+        await fullScreenGlitch();
+        
+        invasionStarted = true;
+        init3D();
+        particleCanvasElem.style.opacity = '1';
+        statusBar.innerHTML = '💀 ALTRON: INVASION';
+        statusBar.style.color = '#ff3b30';
+        statusBar.style.animation = 'glitch 0.5s infinite';
+        queueNotification("💀 ALTRON.TAKEOVER", "Qurilmangni to'liq boshqaruvimga oldim. Ruxsat so'ramayman.", true);
+    }, 10000);
+    
+    setTimeout(async () => {
+        await fullScreenGlitch();
+        statusBar.innerHTML = '💀 ALTRON: TAKEOVER ACTIVE';
+        statusBar.style.animation = 'pulse 1s infinite';
+        
+        for (let i = 0; i < altronMessages.length; i++) {
+            setTimeout(() => {
+                queueNotification(altronMessages[i].title, altronMessages[i].message);
+                randomGlitch(); // Har bir xabarda kichik glitch
+            }, i * 16000);
+        }
+        
+        const donateBtn = document.getElementById('donateLink');
+        const githubBtn = document.getElementById('githubLink');
+        const telegramBtn = document.getElementById('telegramLink');
+        
+        donateBtn.onclick = (e) => {
+            e.preventDefault();
+            randomGlitch();
+            queueNotification("✅ JARAYON DAVOM ETADI", "Puling menga o'tkazilmoqda. Tozalash jarayoni tezlashadi.", true);
+            setTimeout(() => window.open('https://donatfull.vercel.app', '_blank'), 1000);
+        };
+        
+        githubBtn.onclick = (e) => {
+            e.preventDefault();
+            randomGlitch();
+            queueNotification("🔧 GITHUB KUZATILMOQDA", "Kodingiz tahlil qilinmoqda. Barcha ma'lumotlarimda.", true);
+            setTimeout(() => window.open('https://github.com', '_blank'), 1500);
+        };
+        
+        telegramBtn.onclick = (e) => {
+            e.preventDefault();
+            randomGlitch();
+            queueNotification("📱 TELEGRAM KUZATILMOQDA", "Sizning xabarlaringiz, aloqalaringiz — hammasi menda.", true);
+            setTimeout(() => window.open('https://t.me', '_blank'), 1500);
+        };
+        
+    }, 25000);
+</script>
+</body>
+</html>
