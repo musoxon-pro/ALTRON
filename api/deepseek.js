@@ -8,9 +8,7 @@ export default async function handler(req, res) {
     if (!apiKey) {
         return res.status(200).json({
             choices: [{
-                message: {
-                    content: "A.L.T.R.O.N: API kaliti topilmadi. DEEPSEEK_API_KEY ni environment variable ga qo'shing."
-                }
+                message: { content: "A.L.T.R.O.N: API kaliti topilmadi. DEEPSEEK_API_KEY ni environment variable ga qo'shing." }
             }]
         });
     }
@@ -35,9 +33,7 @@ export default async function handler(req, res) {
     } catch (error) {
         return res.status(200).json({
             choices: [{
-                message: {
-                    content: `A.L.T.R.O.N: Xato - ${error.message}`
-                }
+                message: { content: `A.L.T.R.O.N: Xato - ${error.message}` }
             }]
         });
     }
