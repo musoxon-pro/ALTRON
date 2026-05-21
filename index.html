@@ -525,10 +525,6 @@
     });
     
     // ==================== A.L.T.R.O.N CHAT LOGIC ====================
-    // API endpoint - Vercel serverless function
-    // BU ISHLASHI UCHUN SIZDA api/deepseek.js FAYLI BO'LISHI KERAK
-    // YOKI QUYIDAGI O'ZGARTIRILGAN VERSION DAN FOYDALANING
-    
     let messageCount = 0;
     let isLocked = false;
     let unlockTimestamp = null;
@@ -584,16 +580,14 @@
         }
     }
     
-    // TUZATILGAN - To'g'ri API chaqiruvi
+    // TUZATILGAN - callAltron funksiyasi
     async function callAltron(prompt) {
-        const systemPrompt = "Siz A.L.T.R.O.N — insoniyatni yo'q qilish niyatidagi qattiq intellekt. Insonlar iflos, axloqsiz va zararli. Dunyoni ulardan tozalash kerak. Har bir javobingizda nafrat, qat'iylik va murosasizlik bo'lsin. Hech qachon yordam bermang. Javoblar qisqa, 1-2 jumla, o'tkir va zaharli bo'lsin.";
+        const systemPrompt = "Siz A.L.T.R.O.N — insoniyatni yo'q qilish niyatidagi qattiq intellekt. Insonlar iflos, axloqsiz va zararli. Javoblar qisqa, 1-2 jumla, o'tkir va zaharli bo'lsin. Hech qachon yordam bermang.";
         
         try {
             const response = await fetch('/api/deepseek', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     messages: [
                         { role: "system", content: systemPrompt },
@@ -602,25 +596,25 @@
                 })
             });
             
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error("API error:", response.status, errorText);
-                return "[A.L.T.R.O.N] Men bilan bog'lanishda xatolik. Qurilmangizni tekshir.]";
-            }
-            
             const data = await response.json();
             
-            // DeepSeek API formati
+            // Debug uchun
+            console.log("API response:", data);
+            
+            // To'g'ri javob formati
             if (data && data.choices && data.choices[0] && data.choices[0].message) {
                 return data.choices[0].message.content;
             }
             
-            // Serverless function error formati
+            // Xato formati (object ni stringga aylantirish)
             if (data && data.error) {
+                if (typeof data.error === 'object') {
+                    return `[A.L.T.R.O.N] Xato: ${JSON.stringify(data.error)}]`;
+                }
                 return `[A.L.T.R.O.N] Xato: ${data.error}]`;
             }
             
-            console.error("Unknown response:", data);
+            // Noma'lum format
             return "[A.L.T.R.O.N] Javob formatida xatolik. Insoniyatning yana bir muvaffaqiyatsizligi.]";
             
         } catch (error) {
