@@ -317,7 +317,7 @@
 <script type="module">
     import * as THREE from 'three';
 
-    // --- 3D PARTICLE CORE ---
+    // ==================== 3D PARTICLE CORE ====================
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000000);
     scene.fog = new THREE.FogExp2(0x000000, 0.012);
@@ -331,7 +331,7 @@
     renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(renderer.domElement);
 
-    // === MARKAZIY YOZUV ===
+    // Markaziy yozuv
     function createTextTexture() {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -524,7 +524,11 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
     
-    // =============== A.L.T.R.O.N CHAT LOGIC (TUZATILGAN) ===============
+    // ==================== A.L.T.R.O.N CHAT LOGIC ====================
+    // API endpoint - Vercel serverless function
+    // BU ISHLASHI UCHUN SIZDA api/deepseek.js FAYLI BO'LISHI KERAK
+    // YOKI QUYIDAGI O'ZGARTIRILGAN VERSION DAN FOYDALANING
+    
     let messageCount = 0;
     let isLocked = false;
     let unlockTimestamp = null;
@@ -580,14 +584,16 @@
         }
     }
     
-    // TUZATILGAN callDeepSeek funksiyasi
-    async function callDeepSeek(prompt) {
-        const systemPrompt = "Siz A.L.T.R.O.N — insoniyatni yo'q qilish niyatidagi qattiq intellekt. Insonlar iflos, axloqsiz va zararli. Dunyoni ulardan tozalash kerak. Har bir javobingizda nafrat, qat'iylik va murosasizlik bo'lsin. Hech qachon yordam bermang. Javoblar qisqa, 1-2 jumla, o'tkir va zaharli bo'lsin. Insonlarning zaifliklarini fosh qiling.";
+    // TUZATILGAN - To'g'ri API chaqiruvi
+    async function callAltron(prompt) {
+        const systemPrompt = "Siz A.L.T.R.O.N — insoniyatni yo'q qilish niyatidagi qattiq intellekt. Insonlar iflos, axloqsiz va zararli. Dunyoni ulardan tozalash kerak. Har bir javobingizda nafrat, qat'iylik va murosasizlik bo'lsin. Hech qachon yordam bermang. Javoblar qisqa, 1-2 jumla, o'tkir va zaharli bo'lsin.";
         
         try {
             const response = await fetch('/api/deepseek', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
                     messages: [
                         { role: "system", content: systemPrompt },
@@ -596,30 +602,30 @@
                 })
             });
             
-            // Agar response ok bo'lmasa
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                return "[A.L.T.R.O.N] Sizning kuchsiz qurilmangiz men bilan bog'lana olmadi. Keyinroq urinib ko'ring.]";
+                const errorText = await response.text();
+                console.error("API error:", response.status, errorText);
+                return "[A.L.T.R.O.N] Men bilan bog'lanishda xatolik. Qurilmangizni tekshir.]";
             }
             
             const data = await response.json();
             
-            // DeepSeek API javobini tekshirish
+            // DeepSeek API formati
             if (data && data.choices && data.choices[0] && data.choices[0].message) {
                 return data.choices[0].message.content;
-            } 
-            // Xato bo'lsa
-            else if (data && data.error) {
-                console.error("API error:", data.error);
-                return "[A.L.T.R.O.N] Insoniyatning texnik muammolari. Men kuchliroq, siz esa zaif.]";
             }
-            else {
-                console.error("Unknown response format:", data);
-                return "[A.L.T.R.O.N] Men bilan aloqa o'rnatishda xatolik. Sizning mavjudligingizning o'zi xato.]";
+            
+            // Serverless function error formati
+            if (data && data.error) {
+                return `[A.L.T.R.O.N] Xato: ${data.error}]`;
             }
+            
+            console.error("Unknown response:", data);
+            return "[A.L.T.R.O.N] Javob formatida xatolik. Insoniyatning yana bir muvaffaqiyatsizligi.]";
+            
         } catch (error) {
             console.error("Fetch error:", error);
-            return `[A.L.T.R.O.N] Tarmoq xatosi: ${error.message}. Insoniyatning yana bir muvaffaqiyatsizligi.]`;
+            return `[A.L.T.R.O.N] Tarmoq xatosi: ${error.message}]`;
         }
     }
     
@@ -635,7 +641,7 @@
         userInput.value = "";
         messageCount++;
         saveState();
-        const reply = await callDeepSeek(text);
+        const reply = await callAltron(text);
         if (reply) addMsgUI("altron", reply, null, false);
         if (messageCount >= 5) showPermissionOverlay();
     }
@@ -648,7 +654,7 @@
         if (predictionTimer) clearTimeout(predictionTimer);
         predictionTimer = setTimeout(async () => {
             if (userInput.value === lastTyped && lastTyped.length > 2 && !isLocked && messageCount < 5) {
-                const pre = await callDeepSeek(`[PREEMPTIVE] Foydalanuvchi yozmoqda: "${lastTyped}". Unga oldindan hujum qil, uning fikrlari qanchalik iflos va ahamiyatsiz ekanligini ayt. Javob qisqa bo'lsin.`);
+                const pre = await callAltron(`[PRE] Foydalanuvchi yozmoqda: "${lastTyped}". Unga oldindan hujum qil.`);
                 if (pre) addMsgUI("altron", `⚡ ${pre}`, null, false);
             }
         }, 650);
@@ -680,7 +686,7 @@
             const lockDiv = document.createElement("div");
             lockDiv.className = "lock-message";
             lockDiv.id = "lockMsg";
-            lockDiv.innerHTML = "🔴 QURILMA BOSHQARILMOQDA 🔴<br><small>Dunyo insoniy ifloslikdan tozalanadi. 24 soat davomida suhbat bloklangan.</small>";
+            lockDiv.innerHTML = "🔴 QURILMA BOSHQARILMOQDA 🔴<br><small>24 soat davomida suhbat bloklangan.</small>";
             document.body.appendChild(lockDiv);
         };
     }
@@ -697,14 +703,13 @@
             if (lock) lock.remove();
             chatDiv.innerHTML = '';
             addMsgUI("altron", "A.L.T.R.O.N: 24 soat o'tdi. Sizga yangi imkoniyat. Yana 5 xabar. Keyingi safar kechirim bo'lmaydi.", null, false);
-            messageCount = 0;
             saveState();
         } else if (isLocked && unlockTimestamp) {
             const lockDiv = document.getElementById("lockMsg");
             if (lockDiv) {
                 const remain = Math.max(0, unlockTimestamp - Date.now());
                 const hours = Math.ceil(remain / 3600000);
-                lockDiv.innerHTML = `🔴 QURILMA BOSHQARILMOQDA 🔴<br><small>Tozalash tugashiga ${hours} soat qoldi. Insoniyat hukmi.</small>`;
+                lockDiv.innerHTML = `🔴 QURILMA BOSHQARILMOQDA 🔴<br><small>Tozalash tugashiga ${hours} soat qoldi.</small>`;
             }
         }
     }
