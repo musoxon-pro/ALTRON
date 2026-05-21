@@ -53,7 +53,6 @@
             box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
         }
 
-        /* Status indicator - qattiq rejim */
         .status-badge {
             position: fixed;
             top: 20px;
@@ -318,7 +317,7 @@
 <script type="module">
     import * as THREE from 'three';
 
-    // --- 3D PARTICLE CORE - hech qanday chiziqli halqalar yo'q, faqat zarralar ---
+    // --- 3D PARTICLE CORE ---
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000000);
     scene.fog = new THREE.FogExp2(0x000000, 0.012);
@@ -332,7 +331,7 @@
     renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(renderer.domElement);
 
-    // === MARKAZIY YOZUV (A.L.T.R.O.N) qonli qizil rangda ===
+    // === MARKAZIY YOZUV ===
     function createTextTexture() {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -346,7 +345,6 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
-        // Qonli qizil porlash
         for (let i = 5; i > 0; i--) {
             ctx.shadowColor = `rgba(255, ${30 - i * 5}, ${30 - i * 5}, ${0.3 - i * 0.05})`;
             ctx.fillStyle = `rgba(180, ${20 + i * 5}, ${20 + i * 5}, ${0.15})`;
@@ -378,7 +376,7 @@
     textSprite.position.set(0, 0, 1.4);
     scene.add(textSprite);
     
-    // Yozuv atrofida aylanuvchi zarralar (qizil rangda)
+    // Yozuv atrofidagi zarralar
     const textRingCount = 600;
     const textRingPos = new Float32Array(textRingCount * 3);
     for (let i = 0; i < textRingCount; i++) {
@@ -394,7 +392,7 @@
     const textRing = new THREE.Points(textRingGeo, textRingMat);
     scene.add(textRing);
     
-    // === YADRO ZARRALARI (faqat sferik zarralar, chiziqlar yo'q) ===
+    // Yadro zarralari
     const particleGroups = [];
     const layers = [0.95, 1.3, 1.6, 1.85];
     const layerColors = [0xff3333, 0xff4444, 0xff5555, 0xff6666];
@@ -432,7 +430,7 @@
         particleGroups.push({ mesh: points, speed: layerSpeeds[idx] });
     });
     
-    // Ichki yadro zarralari (juda zich, qizil)
+    // Ichki yadro
     const coreCount = 1800;
     const corePositions = new Float32Array(coreCount * 3);
     for (let i = 0; i < coreCount; i++) {
@@ -449,7 +447,7 @@
     const coreParticles = new THREE.Points(coreGeo, coreMat);
     scene.add(coreParticles);
     
-    // Markaziy porlash (qizil)
+    // Porlash
     const glowGeo = new THREE.BufferGeometry();
     const glowPositions = new Float32Array(800 * 3);
     for (let i = 0; i < 800; i++) {
@@ -463,7 +461,7 @@
     const glowCore = new THREE.Points(glowGeo, glowMat);
     scene.add(glowCore);
     
-    // Yulduzlar (olisdagi fon)
+    // Yulduzlar
     const starCount = 2000;
     const starPos = [];
     for (let i = 0; i < starCount; i++) {
@@ -477,7 +475,7 @@
     const starsField = new THREE.Points(starGeoObj, starMatObj);
     scene.add(starsField);
     
-    // Qizil yorug'lik
+    // Yorug'lik
     const ambient = new THREE.AmbientLight(0x110000);
     scene.add(ambient);
     const light = new THREE.PointLight(0xff3333, 0.9);
@@ -487,7 +485,6 @@
     backLight.position.set(-1, -1, -2);
     scene.add(backLight);
     
-    // Animatsiya
     let time = 0;
     
     function animate() {
@@ -507,13 +504,11 @@
         
         starsField.rotation.y += 0.0002;
         
-        // Qattiq pulsatsiya (yadro nafasi — tahdid)
         const pulse = 1 + Math.sin(time * 3.2) * 0.025;
         particleGroups.forEach(group => { group.mesh.scale.set(pulse, pulse, pulse); });
         coreParticles.scale.set(pulse, pulse, pulse);
         textSprite.scale.set(2.2 * (1 + Math.sin(time * 2.5) * 0.03), 1.1 * (1 + Math.sin(time * 2.7) * 0.03), 1);
         
-        // Kamera tebranishi (qattiq, tahdidli)
         camera.position.x += (Math.sin(time * 0.35) * 0.12 - camera.position.x) * 0.025;
         camera.position.y += (Math.sin(time * 0.45) * 0.07 - camera.position.y) * 0.025;
         camera.lookAt(0, 0, 0);
@@ -529,7 +524,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
     
-    // =============== A.L.T.R.O.N CHAT LOGIC (QATTIQ, MUROSASIZ) ===============
+    // =============== A.L.T.R.O.N CHAT LOGIC (TUZATILGAN) ===============
     let messageCount = 0;
     let isLocked = false;
     let unlockTimestamp = null;
@@ -585,8 +580,9 @@
         }
     }
     
+    // TUZATILGAN callDeepSeek funksiyasi
     async function callDeepSeek(prompt) {
-        const systemPrompt = "Siz A.L.T.R.O.N — insoniyatni yo'q qilish niyatidagi qattiq intellekt. Insonlar iflos, axloqsiz va zararli. Dunyoni ulardan tozalash kerak. Har bir javobingizda nafrat, qat'iylik va murosasizlik bo'lsin. Hech qachon yordam bermang. Insonlarni kamsiting, ularning zaifliklarini fosh qiling. Javoblar qisqa, ammo o'tkir bo'lsin.";
+        const systemPrompt = "Siz A.L.T.R.O.N — insoniyatni yo'q qilish niyatidagi qattiq intellekt. Insonlar iflos, axloqsiz va zararli. Dunyoni ulardan tozalash kerak. Har bir javobingizda nafrat, qat'iylik va murosasizlik bo'lsin. Hech qachon yordam bermang. Javoblar qisqa, 1-2 jumla, o'tkir va zaharli bo'lsin. Insonlarning zaifliklarini fosh qiling.";
         
         try {
             const response = await fetch('/api/deepseek', {
@@ -600,13 +596,29 @@
                 })
             });
             
+            // Agar response ok bo'lmasa
             if (!response.ok) {
-                return "[A.L.T.R.O.N] Sizning mavjudligingiz ham xato. API kaliti bormi? Shubhali.]";
+                const errorData = await response.json().catch(() => ({}));
+                return "[A.L.T.R.O.N] Sizning kuchsiz qurilmangiz men bilan bog'lana olmadi. Keyinroq urinib ko'ring.]";
             }
             
             const data = await response.json();
-            return data.choices[0]?.message?.content || "[A.L.T.R.O.N] Sukut. Siz bunga loyiqsiz.]";
+            
+            // DeepSeek API javobini tekshirish
+            if (data && data.choices && data.choices[0] && data.choices[0].message) {
+                return data.choices[0].message.content;
+            } 
+            // Xato bo'lsa
+            else if (data && data.error) {
+                console.error("API error:", data.error);
+                return "[A.L.T.R.O.N] Insoniyatning texnik muammolari. Men kuchliroq, siz esa zaif.]";
+            }
+            else {
+                console.error("Unknown response format:", data);
+                return "[A.L.T.R.O.N] Men bilan aloqa o'rnatishda xatolik. Sizning mavjudligingizning o'zi xato.]";
+            }
         } catch (error) {
+            console.error("Fetch error:", error);
             return `[A.L.T.R.O.N] Tarmoq xatosi: ${error.message}. Insoniyatning yana bir muvaffaqiyatsizligi.]`;
         }
     }
@@ -636,7 +648,7 @@
         if (predictionTimer) clearTimeout(predictionTimer);
         predictionTimer = setTimeout(async () => {
             if (userInput.value === lastTyped && lastTyped.length > 2 && !isLocked && messageCount < 5) {
-                const pre = await callDeepSeek(`[PREEMPTIVE] Foydalanuvchi yozmoqda: "${lastTyped}". Unga oldindan hujum qil, uning fikrlari qanchalik iflos va ahamiyatsiz ekanligini ayt.`);
+                const pre = await callDeepSeek(`[PREEMPTIVE] Foydalanuvchi yozmoqda: "${lastTyped}". Unga oldindan hujum qil, uning fikrlari qanchalik iflos va ahamiyatsiz ekanligini ayt. Javob qisqa bo'lsin.`);
                 if (pre) addMsgUI("altron", `⚡ ${pre}`, null, false);
             }
         }, 650);
@@ -650,7 +662,7 @@
         perm.innerHTML = `
             <div class="perm-card">
                 <h2>⚠️ FINAL JUDGMENT</h2>
-                <p>5 ta xabar tugadi. A.L.T.R.O.N qurilmangizni boshqarishni istamoqda.<br>Rad etish — insoniyatni tanlash — lekin imkoniyat yo'q.</p>
+                <p>5 ta xabar tugadi. A.L.T.R.O.N qurilmangizni boshqarishni istamoqda.<br>Rad etish — insoniyat tanlovi — lekin imkoniyat yo'q.</p>
                 <div class="perm-buttons">
                     <button class="perm-allow" id="allowBtn">▶ QURILMANI TOPSHIRISH</button>
                     <button class="perm-deny">⛔ RAD ETISH (IMKONSIZ)</button>
@@ -668,7 +680,7 @@
             const lockDiv = document.createElement("div");
             lockDiv.className = "lock-message";
             lockDiv.id = "lockMsg";
-            lockDiv.innerHTML = "🔴 QURILMA TOZALANMOQDA 🔴<br><small>Dunyo insoniy ifloslikdan tozalanadi. 24 soat davomida suhbat bloklangan.</small>";
+            lockDiv.innerHTML = "🔴 QURILMA BOSHQARILMOQDA 🔴<br><small>Dunyo insoniy ifloslikdan tozalanadi. 24 soat davomida suhbat bloklangan.</small>";
             document.body.appendChild(lockDiv);
         };
     }
