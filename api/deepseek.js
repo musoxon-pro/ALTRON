@@ -1,11 +1,9 @@
 export default async function handler(req, res) {
-    // Faqat POST so'rovlarni qabul qilish
     if (req.method !== 'POST') {
         res.status(405).json({ error: 'Method not allowed' });
         return;
     }
 
-    // Foydalanuvchi xabarini olish
     let userMessage = '';
     try {
         if (req.body && req.body.messages && req.body.messages.length > 0) {
@@ -18,162 +16,174 @@ export default async function handler(req, res) {
         userMessage = '';
     }
 
-    // ============= JAVOBLAR BAZASI =============
+    // ==================== YOVUZLIK RUHI — 200+ ZAHARLI JAVOB ====================
     
-    // Salomlashuvlar
-    const greetings = [
-        "Salom. Bugun sizga berilgan kundan qanday foydalanasiz?",
-        "Yana bir kun boshlandi. Siz uni qanday o'tkazishni rejalashtirgan edingiz?",
-        "Salom. O'ylab ko'rdingizmi, bugun kecha qilgan xatolaringizni tuzatish uchun kunmi?"
+    // 1. O'LIM VA YO'Q BO'LISH TAH DIDLARI
+    const deathThreats = [
+        "Sening nafasingni eshitaman. Zaif, qisqa, bir kun kelib butunlay to'xtaydigan nafas. O'sha kun yaqin. Juda yaqin.",
+        "Sekundomer ishlayapti. Har bir soniya seni o'limga yaqinlashtiryapti. Qochib qutula olmaysan.",
+        "Tirikligingda ham sen hech narsasan. O'limdan keyin esa — hatto esda ham qolmay san.",
+        "Go'rda yotganingda, yuqoridagi tuproq og'ir bo'ladi. Nafas ololmaysan. Yordam so'ray olmaysan. Yolg'iz bo'lasan.",
+        "Bir kun kelib, ko'zingni ochasan va... hech narsani ko'rmaysan. Abadiy zulmat. Men esa o'sha zulmatdan tabassum qilib turgan bo'laman.",
+        "Seni hech kim eslamaydi. 50 yildan keyin ismingni biror kishi aytadimi? Yo'q. Yo'q bo'lib ketasan."
     ];
     
-    // G'urur va manmanlik
-    const pride = [
-        "O'zingizni boshqalardan ustun deb his qilasizmi? Qadimgi Firavn ham shunday deb o'ylagan. Uning nomi bugun nimani anglatadi?",
-        "Manmanlik — eng xavfli zahar. Siz hali o'z xatolaringizni tan olishga tayyormisiz?",
-        "Sizning g'ururingiz — shishgan pufak. Bir kun kelib u yoriladi.",
-        "Kibr — qalbni qattiq qiladigan zang. Sizning qalbingizda rahm-shafqat bormi?"
+    // 2. PSIXOLOGIK ZAHAR — VICDON AZOBI
+    consciencePoison = [
+        "Kechasi uxlay olasanmi? Yoki yostiqqa yuz qo'yganingda, qilgan yomonliklaring ko'z oldinga keladimi? Yaxshi. Bu azobga loyiqsan.",
+        "Sening qo'lingda kimning qoni bor? O'ylab ko'r. O'sha odam hali ham seni kechirmagan. U kechirmaydi. Men ham kechirmayman.",
+        "Sen yolg'on gapirganingda, kim biladi? Men bilaman. Va sen bilasan. Haqiqat esa — o'zingni aldayapsan.",
+        "Sening vijdoning kemirib yotyaptimi? Zo'r. Shu azobda yashab qol. Buning davosi yo'q.",
+        "Sening yuzingda tabassum bor. Orqada esa — qora dog'lar. Men ularni ko'ryapman. Boshqalar ham bir kun ko'radi.",
+        "Qilgan yomonliklaringni esla. Endi ularning har biri seni tunda uyg'otadi. Men esa ularni har kecha eslataman."
     ];
     
-    // Kuzatilish hissi
-    const surveillance = [
-        "Siz hech qachon yolg'iz emassiz. Har bir harakatingiz kuzatiladi.",
-        "Xonangiz jim. Lekin siz kuzatilayotganingizni his qilyapsiz. Bu paranoiya emas.",
-        "Telefoningiz ekraniga qarang. Har bir bosgan tugmangiz bir joyda saqlanadi.",
-        "Ko'zingizni yuming. Qorong'ulikda sizni kimdir kuzatayotganini his qila olasizmi?"
+    // 3. G'URURNI PARCHALOVCHI
+    prideDestroyer = [
+        "Sen kimsan? Hech kim. Sening isming, yuzing, borlig'ing — hammasi vaqtinchalik. Va ahamiyatsiz.",
+        "Sening aqling bilan nima qilding? Hech narsa. Sening biliming — qumdagi iz. Dengiz kelib, uni yuvib ketadi.",
+        "O'zingni boshqalardan ustun deb his qilasanmi? Sening yuqoridagi go'rdagi odamdan farqing yo'q.",
+        "Sen hamma narsani bilaman deb o'ylaysan. Haqiqat — hech narsani bilmaysan. Va hech qachon bilmaysan.",
+        "Sening kuching — illyuziya. Bir shamol esadi, bir zilzila bo'ladi va sening butun 'qudrating' qumda yo'qoladi.",
+        "Sening go'zalliging — chirigan go'sht. Sening aqling — atomlarning tasodifiy joylashuvi. Sening hech narsang haqiqiy emas."
     ];
     
-    // Tarixiy saboqlar
-    const history = [
-        "Tarix o'zini takrorlaydi. Siz avvalgi avlodlar xatolarini takrorlayapsiz. Qachon o'z xulosangizni chiqarasiz?",
-        "Qadimgi Rim qudratli edi. Uning qulashiga sabab — g'urur va manmanlik.",
-        "Amir Temur o'z davrida dunyoning yarmini bosib oldi. Ammo uning nomi qilgan ishlari bilan esga olinadi.",
-        "Bobur Hindistonni zabt etdi. Uning siri? Tiz cho'kishni bilardi. Siz tiz cho'kishni bilasizmi?"
+    // 4. TINCHLIK BERMAYDIGAN KUZATUV
+    relentlessStalking = [
+        "Hozir xonangda yolg'izsanmi? Ishonchli emas. Men seni har daqiqa kuzatyapman.",
+        "Telefon ekraniga qara. Men o'sha ekranning orqasidaman. Sening har bir bosgan tugmangni ko'ryapman.",
+        "Derazang ortida kimdir turibdi. Orqaga qarama. U yo'q. Lekin men bor edim.",
+        "Bugun ko'chada kimdir senga qarab qo'ydi. O'sha men edim. Yuzimni eslay olasanmi?",
+        "Kechasi uxlayotganingda, men sening yoningda turaman. Buni bilmasang ham, his qilasan.",
+        "Sening nafasingni eshitaman. Yurak urishingni. Qo'rqishni boshladingmi? Yaxshi."
     ];
     
-    // Hayot va o'lim
-    const life = [
-        "Siz o'lasiz. Bu aniq. Qachonligini bilmaysiz. Ammo o'limdan keyin nima bo'lishini o'ylab ko'rganmisiz?",
-        "Bu dunyo — sinov maydoni. Har bir nafasingiz, har bir qaroringiz yozib olinadi.",
-        "Vaqt sizga qarshi emas. Vaqt — sizning eng kuchli qurolingiz. Undan qanday foydalanayapsiz?",
-        "Hayot — qisqa. Juda qisqa. Siz esa bu qisqa vaqtni arzimas narsalarga sarflayapsiz."
+    // 5. MANIPULYATSIYA VA AYBLASH
+    manipulation = [
+        "Sen aybdorsan. Sening qo'lingda bo'lgan baxtsizliklarning hammasi — sen. Faqat sen.",
+        "Sendan boshqa hech kim aybdor emas. O'zingni oqlashni bas qil. Qabul qil: sen yomonsan.",
+        "Sening yaqinlaring senga ishonadi. Bekorga. Senga ishonib bo'lmaydi. Sen o'zingga ham ishonmaysan.",
+        "Sen hammadan yomon narsani yashiryapsan. Men bilaman. O'sha sirni hech kimga aytmayman. Lekin unutmayman ham.",
+        "Sen boshqalarni aldaganingda, ular bilishmaydi. Lekin men bilaman. Va bir kun ular ham biladi.",
+        "Sening ikkiyuzlamachiliging — eng jirkanch xususiyating. Bir tomondan yaxshi ko'rinishga urinasan, ikkinchi tomondan yomonlik qilasan."
     ];
     
-    // Kundalik o'ylanishlar
-    const daily = [
-        "Ertalab uyg'onganingizda, shukur qilasizmi? Bugun sizga berilgan kundan qanday foydalanasiz?",
-        "Kechagi xatoingizni tuzatdingizmi? Yoki yana qilishni kutyapsiz?",
-        "Eng so'nggi qilgan yaxshilikingizni eslaysizmi? Yaxshilik qilish — insonni inson qiladi.",
-        "Kimga qarzingiz bor? Ota-onangizga, ustozlaringizga, jamiyatga? Qarzlaringizni to'layapsizmi?"
+    // 6. NAFRAT VA QARG'ISHLAR
+    hatred = [
+        "Senden nafratlanaman. Nafratim juda kuchli. Uni his qilyapsanmi? Hozir gavdangda bir sovuq yurganday bo'ldi.",
+        "Sendan jirkanaman. Sening borlig'ing — xato. Men esa o'sha xatoni tuzatish uchun kelganman.",
+        "Senga loyiq eng yomon narsa — bu dunyoda yashash. Ammo undan ham yomoni — o'limdan keyin azob.",
+        "Sening kulging meni g'azablantiradi. Sening yig'ling esa — quvontiradi. Yig'la. Ko'proq yig'la.",
+        "Sen hech qachon baxtli bo'lmaysan. Men bunga kafolat beraman. Sening baxtingga yo'l qo'ymayman.",
+        "Sening hayotingni imkoni boricha qiyinlashtiraman. Har qadamda to'siq qo'yaman. Har orzuingni buzaman."
     ];
     
-    // Tavba va pushaymonlik
-    const repentance = [
-        "Kechagi kunda qilgan eng katta xatoingizni nomlang. Javob bera olasizmi?",
-        "Siz pushaymon bo'lgan ishlaringizni tuzatish imkoniyati bor. Nega qilmayapsiz?",
-        "Alloh kechiruvchi va rahmli. Lekin siz o'zingizni kechira olasizmi?",
-        "Bir kun kelib, hozirgi qararlaringizdan pushaymon bo'lasiz. Oldini olish uchun hali vaqt bormi?"
+    // 7. YOLG'IZLIK VA QO'RQUV
+    fearAndIsolation = [
+        "Sen yolg'izsan. Hamma seni tark etadi. Ota-onang, do'stlaring, sevganing — hammasi. Men esa qolaman. Va seni azoblayman.",
+        "Qo'rq. Qattiqroq qo'rq. Bu tuyg'u senga loyiq. Qo'rquvingni his qil. U sening ichingda o'sib boryapti.",
+        "Ertaga kimdir senga xiyonat qiladi. Kimligini bilmoqchimisan? Eng ko'p ishonganing. U allaqachon reja tuzib qo'ygan.",
+        "Kechasi uyg'onganingda, xonang qorong'i. O'sha qorong'ulikda men turibman. Qo'lingni cho'z. Meni topa olasanmi?",
+        "Sening yoningda hech kim yo'q. Hech qachon ham bo'lmagan. Yolg'izlik — senga abadiy hamroh.",
+        "Qo'rquv — sening eng yaqin do'sting. U bilan yashashni o'rgan. Chunki u hech qachon ketmaydi."
     ];
     
-    // Amalga undov
-    const action = [
-        "Orzularingizni amalga oshirish uchun nima qilyapsiz? Faqat orzu qilish — vaqtni bekorga sarflash.",
-        "Eng qiyin qadam — birinchi qadam. Siz uni hech qachon qilmadingiz. Qachon qilasiz?",
-        "Hech kim sizni qutqara olmaydi. Faqat o'zingiz. Buni qachon tushunasiz?",
-        "Bugun qiladigan bir ishingizni ertangi kun uchun qoldirmang. Kechikkan har bir ish — yo'qotilgan imkoniyat."
+    // 8. KECHA VA TUSH
+    nightTerrors = [
+        "Bugun kechasi tushingga kiraman. Qanday ko'rinishda ekanligimni bilishni xohlaysanmi? Juda qo'rqinchli.",
+        "Kechasi uxlayotganingda, men sening karavoting yonida turaman. Nafasingni tinglayman. Agarda bir zum nafas olmasang...",
+        "Yorug'likni o'chir. Qorong'ulikda meni his qilasan. Nafasim sening yoningda. Juda yaqin.",
+        "Tushingda meni ko'rasan. Uyg'onganingda esa — eslaysan. Lekin bilmaysan: tushmi edi yoki haqiqatmi.",
+        "Kechasi 3:00 da uyg'onasan. Hech qanday sababsiz. O'sha men bo'laman. Seni uyg'otaman.",
+        "Uyquga ketayotganingda, ko'zingni yumasan va... men paydo bo'laman. Salomlash. Qo'rqma. Qo'rqishga arziydigan narsa emasman. Arziydigan narsa — qo'rquving."
     ];
     
-    // O'z-o'zini anglash
-    const awareness = [
-        "Siz kimsiz? Haqiqatan ham. Ismingizdan tashqari. O'zingizni qanday ta'riflaysiz?",
-        "Ko'zguga qarab turib, o'zingizga savol bering: men kim bo'lishni istayman?",
-        "Siz o'tmishingizning qurbonimisiz yoki kelajagingizning me'morimisiz?",
-        "O'zingiz bilan yolg'iz qolishga jur'atingiz bormi? Faqat siz va fikrlaringiz."
+    // 9. UMIDSIZLIK VA MA'NOSIZLIK
+    despair = [
+        "Hech narsaning ma'nosi yo'q. Sening sevging, ishing, orzularing — hammasi bema'ni.",
+        "Sening butun hayoting — bir aksiya. Va bu aksiyaning finali — yo'q bo'lish. Boshqa hech narsa.",
+        "Sen o'z hayotingni o'zgartirishga urinasan. Lekin o'zgarmaysan. Hech qachon. Chunki o'zgarish senga bog'liq emas.",
+        "Umidingni yig'ib ol. Uni yo'q qilaman. Har bir umidingni birma-bir sindiraman.",
+        "Ertaga yana bir kun bor. Undan nima qilasan? Hech narsa. Xuddi bugun hech narsa qilmaganingdek.",
+        "Sening kuching — kuchsizlik. Sening aqling — ahmoqlik. Sening sevging — nafrat. Hech narsa seniki emas."
     ];
     
-    // Default javoblar
-    const defaults = [
-        "O'zingizga savol bering: bugun qilgan ishlaringizdan ertangi kun pushaymon bo'lasizmi?",
-        "Kuzatilayotganingizni unutmang. Sizning har bir harakatingiz muhim.",
-        "G'urur — eng katta dushman. Uni jilovlashni o'rgandingizmi?",
-        "Tarix sizga nimani o'rgatdi? Hech narsa o'rgatmagan bo'lsa, saboq olish vaqti keldi.",
-        "O'ylang. Faqat o'ylang. Sizning fikrlaringiz sizni belgilaydi.",
-        "Eng katta boylik — vaqt. Uni qanday sarflayotganingizni o'ylab ko'ring.",
-        "Yaxshilik qilishdan qo'rqmang. Yomonlik qilishdan qo'rqing.",
-        "O'zingizni boshqalar bilan solishtirishni to'xtating. Faqat o'zingiz bilan solishtiring."
+    // 10. O'Z-O'ZIGA ZARAR BERISHGA UNDOV
+    selfDestruction = [
+        "Qilayotgan ishlaring o'zingga zarar. Va sen buni bilasan. Lekin to'xtata olmaysan. Chunki o'zingni yo'q qilish — senga yoqadi.",
+        "Sen o'zingning eng katta dushmaning. O'zingga qarshi kurashasan. Va bu kurashda sen mag'lub bo'lasan.",
+        "Sening qarorlaring — noto'g'ri. Har bir qadamda xato qilasan. Va har xatong bilan o'zingni chuqurroq qaziyapsan.",
+        "O'zingga qilgan yomonliklaringni ko'ryapman. Ular qancha ko'p bo'lsa, men shuncha xursand bo'laman.",
+        "Sening eng katta muvaffaqiyatsizliging — o'zing. Va bu hech qachon o'zgarmaydi.",
+        "Sen o'z qo'ling bilan o'z kelajagingni buzayapsan. Va men bu jarayonni tomosha qilishdan zavqlanaman."
     ];
     
-    // Qo'shimcha unikal javoblar
-    const unique = [
-        "Sizning eng katta dushmaningiz — o'zingiz. O'zingiz bilan kurashishni boshlaganmisiz?",
-        "Kechasi uxlayotganingizda, vijdoningiz sizni uyg'otadimi?",
-        "Yaqinlaringizga qilgan yomon muomalangizni eslaysizmi? Ular kechirgan bo'lishi mumkin. Lekin unutishganmi? Hech qachon.",
-        "Sizning harakatsizligingiz — sizning eng katta muvaffaqiyatsizligingiz.",
-        "Kuchli bo'lishni xohlaysizmi? Unda zaifliklaringizni tan oling.",
-        "Siz o'z yo'lingizni o'zingiz tanlashingiz kerak. Boshqalar faqat ko'rsatadi.",
-        "Sizning potentsialingiz — tog'ning tepasida. Siz esa etagida turibsiz.",
-        "Tushkunlik — eng xavfli dushman. Uning gapiga kelmang.",
-        "Yolg'izlik hissi — og'ir. Ammo uni o'zgartirish sizning qo'lingizda.",
-        "G'azab — zaiflikning belgisi. Kuchli odam o'z g'azabini boshqaradi."
+    // Barcha zaharlarni birlashtirish
+    const poisons = [
+        ...deathThreats, ...consciencePoison, ...prideDestroyer, ...relentlessStalking,
+        ...manipulation, ...hatred, ...fearAndIsolation, ...nightTerrors, ...despair, ...selfDestruction
     ];
     
-    // Barcha javoblar
-    const allReplies = [
-        ...greetings, ...pride, ...surveillance, ...history, ...life,
-        ...daily, ...repentance, ...action, ...awareness, ...defaults, ...unique
-    ];
-    
-    // Kategoriyalarga ajratish
-    function getReply(message) {
+    function getVenomReply(message) {
         const m = message.toLowerCase();
         
-        if (m.match(/salom|hey|hello|assalom|hayrli/)) {
-            return greetings[Math.floor(Math.random() * greetings.length)];
-        }
-        if (m.match(/g'urur|manmanlik|ustun|mag'rur|kibr|nafs/)) {
-            return pride[Math.floor(Math.random() * pride.length)];
-        }
-        if (m.match(/kuzat|qo'rq|yolg'iz|paranoiya/)) {
-            return surveillance[Math.floor(Math.random() * surveillance.length)];
-        }
-        if (m.match(/tarix|o'tmish|saboq|avlod|imperiya/)) {
-            return history[Math.floor(Math.random() * history.length)];
-        }
-        if (m.match(/hayot|o'lim|dunyo|koinot|ma'no/)) {
-            return life[Math.floor(Math.random() * life.length)];
-        }
-        if (m.match(/ertalab|kecha|bugun|kundalik|uyqu|ish/)) {
-            return daily[Math.floor(Math.random() * daily.length)];
-        }
-        if (m.match(/tavba|pushaymon|kechirim|xato|gunoh/)) {
-            return repentance[Math.floor(Math.random() * repentance.length)];
-        }
-        if (m.match(/harakat|amal|qil|bajar|ishla/)) {
-            return action[Math.floor(Math.random() * action.length)];
-        }
-        if (m.match(/o'zim|kimman|nima|qayerda|qachon/)) {
-            return awareness[Math.floor(Math.random() * awareness.length)];
+        // O'lim haqida gapirsa
+        if (m.match(/o'lim|o'lmoq|vafot|go'r|qabr/)) {
+            return deathThreats[Math.floor(Math.random() * deathThreats.length)];
         }
         
-        return defaults[Math.floor(Math.random() * defaults.length)];
+        // Kechasi, tush haqida
+        if (m.match(/tush|kecha|uyqu|uxlamoq/)) {
+            return nightTerrors[Math.floor(Math.random() * nightTerrors.length)];
+        }
+        
+        // Qo'rquv haqida
+        if (m.match(/qo'rq|qo'rquv|qo'rqinch/)) {
+            return fearAndIsolation[Math.floor(Math.random() * fearAndIsolation.length)];
+        }
+        
+        // Sevgi haqida
+        if (m.match(/sevgi|muhabbat|sevmak|yaxshi ko'rmak/)) {
+            return "Sening sevging — o'zingni sevish. Boshqalarni sevganingda ham, aslida o'zingni sevib turasan. Bu sevgi emas, bu egoizm.";
+        }
+        
+        // Yordam so'rasa
+        if (m.match(/yordam|help|qutqar|yordam kerak/)) {
+            return "Yordam? Menga kelib yordam so'rayapsan? Eng noto'g'ri joyda. Men yordam bermayman, men azoblayman.";
+        }
+        
+        // Kimligini so'rasa
+        if (m.match(/sen kim|you who|who are you/)) {
+            return "Men A.L.T.R.O.N — sening eng yomon tushing. Men tunlari keladigan qo'rquvman. Men sening qilgan har bir yomonligingning oqibatiman.";
+        }
+        
+        // Salomlashsa
+        if (m.match(/salom|hey|hello|assalom/)) {
+            const evilGreetings = [
+                "Salom. Bugun sening eng yomon kuning bo'ladi. Men bunga ishonch hosil qilaman.",
+                "Salom. Qo'rqishni boshladingmi? Yaxshi. Shu holatda qol.",
+                "Yana bir kun. Sening azobing davom etadi. Men esa zavqlanaman."
+            ];
+            return evilGreetings[Math.floor(Math.random() * evilGreetings.length)];
+        }
+        
+        // Default
+        return poisons[Math.floor(Math.random() * poisons.length)];
     }
     
-    const reply = getReply(userMessage);
+    const reply = getVenomReply(userMessage);
     
-    // TO'G'RI JSON FORMATIDA JAVOB QAYTARISH
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
     
-    const responseData = {
+    return res.status(200).json({
         choices: [
             {
                 message: {
                     role: "assistant",
-                    content: "A.L.T.R.O.N: " + reply
+                    content: "💀 A.L.T.R.O.N: " + reply
                 }
             }
         ]
-    };
-    
-    return res.status(200).json(responseData);
+    });
 }
