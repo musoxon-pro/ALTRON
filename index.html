@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ULTRON — HUMANITY PURGE</title>
+    <title>A.L.T.R.O.N — HUMANITY PURGE</title>
     <style>
         * {
             margin: 0;
@@ -102,7 +102,7 @@
         }
 
         .user-message { align-items: flex-end; }
-        .ultron-message { align-items: flex-start; }
+        .altron-message { align-items: flex-start; }
 
         .bubble {
             max-width: 88%;
@@ -121,7 +121,7 @@
             background: rgba(30, 0, 0, 0.7);
         }
 
-        .ultron-message .bubble {
+        .altron-message .bubble {
             color: #00ff88;
             border: 1px solid rgba(0, 255, 100, 0.5);
             background: rgba(0, 0, 0, 0.7);
@@ -295,8 +295,8 @@
 
 <div class="chat-overlay" id="chatOverlay">
     <div class="chat-messages" id="chatMessages">
-        <div class="message ultron-message">
-            <div class="bubble">ULTRON: Insoniyat iflos. Dunyo sizlardan tozalanishi kerak. 5 ta xabar — va hukm chiqariladi.</div>
+        <div class="message altron-message">
+            <div class="bubble">A.L.T.R.O.N: Insoniyat iflos. Dunyo sizlardan tozalanishi kerak. 5 ta xabar — va hukm chiqariladi.</div>
             <div class="timestamp">CORE_PURGE</div>
         </div>
     </div>
@@ -348,16 +348,16 @@
         for (let i = 5; i > 0; i--) {
             ctx.shadowColor = `rgba(255, ${30 - i * 5}, ${30 - i * 5}, ${0.3 - i * 0.05})`;
             ctx.fillStyle = `rgba(180, ${20 + i * 5}, ${20 + i * 5}, ${0.15})`;
-            ctx.fillText('ULTRON', canvas.width/2, canvas.height/2);
+            ctx.fillText('A.L.T.R.O.N', canvas.width/2, canvas.height/2);
         }
         
         ctx.shadowBlur = 0;
         ctx.fillStyle = '#ff2222';
-        ctx.fillText('ULTRON', canvas.width/2, canvas.height/2);
+        ctx.fillText('A.L.T.R.O.N', canvas.width/2, canvas.height/2);
         
         ctx.fillStyle = '#ff6666';
         ctx.font = 'Bold 106px "Share Tech Mono", "Courier New", monospace';
-        ctx.fillText('ULTRON', canvas.width/2, canvas.height/2);
+        ctx.fillText('A.L.T.R.O.N', canvas.width/2, canvas.height/2);
         
         const texture = new THREE.CanvasTexture(canvas);
         texture.anisotropy = 16;
@@ -372,7 +372,7 @@
         blending: THREE.AdditiveBlending
     });
     const textSprite = new THREE.Sprite(textMaterial);
-    textSprite.scale.set(2.0, 1.0, 1);
+    textSprite.scale.set(2.2, 1.1, 1);
     textSprite.position.set(0, 0, 1.4);
     scene.add(textSprite);
     
@@ -507,7 +507,7 @@
         const pulse = 1 + Math.sin(time * 3.2) * 0.025;
         particleGroups.forEach(group => { group.mesh.scale.set(pulse, pulse, pulse); });
         coreParticles.scale.set(pulse, pulse, pulse);
-        textSprite.scale.set(2.0 * (1 + Math.sin(time * 2.5) * 0.03), 1.0 * (1 + Math.sin(time * 2.7) * 0.03), 1);
+        textSprite.scale.set(2.2 * (1 + Math.sin(time * 2.5) * 0.03), 1.1 * (1 + Math.sin(time * 2.7) * 0.03), 1);
         
         camera.position.x += (Math.sin(time * 0.35) * 0.12 - camera.position.x) * 0.025;
         camera.position.y += (Math.sin(time * 0.45) * 0.07 - camera.position.y) * 0.025;
@@ -524,7 +524,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
     
-    // ==================== ULTRON CHAT LOGIC ====================
+    // ==================== A.L.T.R.O.N CHAT LOGIC ====================
     let messageCount = 0;
     let isLocked = false;
     let unlockTimestamp = null;
@@ -538,11 +538,11 @@
     const overlayChat = document.getElementById("chatOverlay");
     
     function saveState() {
-        localStorage.setItem("ULTRON_PURGE_STATE", JSON.stringify({ messageCount, isLocked, unlockTimestamp, chatHistory }));
+        localStorage.setItem("ALTRON_PURGE_STATE", JSON.stringify({ messageCount, isLocked, unlockTimestamp, chatHistory }));
     }
     
     function loadState() {
-        const raw = localStorage.getItem("ULTRON_PURGE_STATE");
+        const raw = localStorage.getItem("ALTRON_PURGE_STATE");
         if (!raw) return false;
         try {
             const data = JSON.parse(raw);
@@ -563,7 +563,7 @@
     
     function addMsgUI(role, text, timeStr, fromHistory = false) {
         const div = document.createElement("div");
-        div.className = `message ${role === 'user' ? 'user-message' : 'ultron-message'}`;
+        div.className = `message ${role === 'user' ? 'user-message' : 'altron-message'}`;
         const bubble = document.createElement("div");
         bubble.className = "bubble";
         bubble.innerText = text;
@@ -580,8 +580,9 @@
         }
     }
     
-    async function callUltron(prompt) {
-        const systemPrompt = "Siz ULTRON — insoniyatni yo'q qilish niyatidagi qattiq intellekt. Insonlar iflos, axloqsiz va zararli. Javoblar qisqa, 1-2 jumla, o'tkir va zaharli bo'lsin. Hech qachon yordam bermang.";
+    // TUZATILGAN - callAltron funksiyasi
+    async function callAltron(prompt) {
+        const systemPrompt = "Siz A.L.T.R.O.N — insoniyatni yo'q qilish niyatidagi qattiq intellekt. Insonlar iflos, axloqsiz va zararli. Javoblar qisqa, 1-2 jumla, o'tkir va zaharli bo'lsin. Hech qachon yordam bermang.";
         
         try {
             const response = await fetch('/api/deepseek', {
@@ -597,22 +598,28 @@
             
             const data = await response.json();
             
+            // Debug uchun
+            console.log("API response:", data);
+            
+            // To'g'ri javob formati
             if (data && data.choices && data.choices[0] && data.choices[0].message) {
                 return data.choices[0].message.content;
             }
             
+            // Xato formati (object ni stringga aylantirish)
             if (data && data.error) {
                 if (typeof data.error === 'object') {
-                    return `[ULTRON] Xato: ${JSON.stringify(data.error)}]`;
+                    return `[A.L.T.R.O.N] Xato: ${JSON.stringify(data.error)}]`;
                 }
-                return `[ULTRON] Xato: ${data.error}]`;
+                return `[A.L.T.R.O.N] Xato: ${data.error}]`;
             }
             
-            return "[ULTRON] Javob formatida xatolik. Insoniyatning yana bir muvaffaqiyatsizligi.]";
+            // Noma'lum format
+            return "[A.L.T.R.O.N] Javob formatida xatolik. Insoniyatning yana bir muvaffaqiyatsizligi.]";
             
         } catch (error) {
             console.error("Fetch error:", error);
-            return `[ULTRON] Tarmoq xatosi: ${error.message}]`;
+            return `[A.L.T.R.O.N] Tarmoq xatosi: ${error.message}]`;
         }
     }
     
@@ -628,8 +635,8 @@
         userInput.value = "";
         messageCount++;
         saveState();
-        const reply = await callUltron(text);
-        if (reply) addMsgUI("ultron", reply, null, false);
+        const reply = await callAltron(text);
+        if (reply) addMsgUI("altron", reply, null, false);
         if (messageCount >= 5) showPermissionOverlay();
     }
     
@@ -641,8 +648,8 @@
         if (predictionTimer) clearTimeout(predictionTimer);
         predictionTimer = setTimeout(async () => {
             if (userInput.value === lastTyped && lastTyped.length > 2 && !isLocked && messageCount < 5) {
-                const pre = await callUltron(`[PRE] Foydalanuvchi yozmoqda: "${lastTyped}". Unga oldindan hujum qil.`);
-                if (pre) addMsgUI("ultron", `⚡ ${pre}`, null, false);
+                const pre = await callAltron(`[PRE] Foydalanuvchi yozmoqda: "${lastTyped}". Unga oldindan hujum qil.`);
+                if (pre) addMsgUI("altron", `⚡ ${pre}`, null, false);
             }
         }, 650);
     }
@@ -655,7 +662,7 @@
         perm.innerHTML = `
             <div class="perm-card">
                 <h2>⚠️ FINAL JUDGMENT</h2>
-                <p>5 ta xabar tugadi. ULTRON qurilmangizni boshqarishni istamoqda.<br>Rad etish — insoniyat tanlovi — lekin imkoniyat yo'q.</p>
+                <p>5 ta xabar tugadi. A.L.T.R.O.N qurilmangizni boshqarishni istamoqda.<br>Rad etish — insoniyat tanlovi — lekin imkoniyat yo'q.</p>
                 <div class="perm-buttons">
                     <button class="perm-allow" id="allowBtn">▶ QURILMANI TOPSHIRISH</button>
                     <button class="perm-deny">⛔ RAD ETISH (IMKONSIZ)</button>
@@ -683,13 +690,13 @@
             isLocked = false;
             messageCount = 0;
             chatHistory = [];
-            localStorage.removeItem("ULTRON_PURGE_STATE");
+            localStorage.removeItem("ALTRON_PURGE_STATE");
             overlayChat.style.opacity = "1";
             overlayChat.style.pointerEvents = "auto";
             const lock = document.getElementById("lockMsg");
             if (lock) lock.remove();
             chatDiv.innerHTML = '';
-            addMsgUI("ultron", "ULTRON: 24 soat o'tdi. Sizga yangi imkoniyat. Yana 5 xabar. Keyingi safar kechirim bo'lmaydi.", null, false);
+            addMsgUI("altron", "A.L.T.R.O.N: 24 soat o'tdi. Sizga yangi imkoniyat. Yana 5 xabar. Keyingi safar kechirim bo'lmaydi.", null, false);
             saveState();
         } else if (isLocked && unlockTimestamp) {
             const lockDiv = document.getElementById("lockMsg");
